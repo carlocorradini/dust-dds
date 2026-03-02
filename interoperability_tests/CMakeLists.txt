@@ -37,3 +37,20 @@ target_link_libraries(CycloneDdsBigDataPublisher PRIVATE
   CycloneDDS::ddsc
   BigDataGeneratedIdl
 )
+
+
+add_executable(CycloneDdsSubscriberOptional
+  cyclone_dds_subscriber_optional.c
+)
+target_link_libraries(CycloneDdsSubscriberOptional PRIVATE
+  CycloneDDS::ddsc
+  OptionalGeneratedIdl
+)
+
+add_executable(CycloneDdsPublisherOptional
+  cyclone_dds_publisher_optional.c
+)
+target_link_libraries(CycloneDdsPublisherOptional PRIVATE
+  CycloneDDS::ddsc
+  OptionalGeneratedIdl
+)

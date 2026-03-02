@@ -1,0 +1,9 @@
+module interoperability {
+	module test {
+        struct OptionalType {
+            @optional uint32 maybe_a;
+            @optional double maybe_b;
+            @optional string maybe_c;
+        };
+    };
+};
