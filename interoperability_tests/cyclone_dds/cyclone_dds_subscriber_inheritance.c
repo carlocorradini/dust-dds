@@ -1,18 +1,18 @@
 #include "ddsc/dds.h"
-#include "DisposeData.h"
+#include "Inheritance.h"
 
 #define MAX_SAMPLES 1
 
 int main(int argc, char *argv[])
 {
-	const char *topic_name = "DisposeData";
+	const char *topic_name = "Inheritance";
 
 	const dds_entity_t participant = dds_create_participant(DDS_DOMAIN_DEFAULT, NULL /*qos*/, NULL /*listener*/);
 	if (participant < 0)
 	{
 		DDS_FATAL("dds_create_participant: %s\n", dds_strretcode(-participant));
 	}
-	const dds_entity_t topic = dds_create_topic(participant, &interoperability_test_DisposeDataType_desc, topic_name, NULL /*qos*/, NULL /*listener*/);
+	const dds_entity_t topic = dds_create_topic(participant, &interoperability_test_Cat_desc, topic_name, NULL /*qos*/, NULL /*listener*/);
 	if (topic < 0)
 	{
 		DDS_FATAL("dds_create_topic: %s\n", dds_strretcode(-topic));
@@ -70,14 +70,21 @@ int main(int argc, char *argv[])
 		DDS_FATAL("dds_waitset_wait: %s\n", dds_strretcode(-rc));
 	}
 
+	interoperability_test_Cat *msg;
 	void *samples[MAX_SAMPLES];
 	dds_sample_info_t infos[MAX_SAMPLES];
-	samples[0] = interoperability_test_DisposeDataType__alloc();
+	samples[0] = interoperability_test_Animal__alloc();
 
 	rc = dds_read(data_reader, samples, infos, MAX_SAMPLES, MAX_SAMPLES);
 	if (rc < 0)
 	{
 		DDS_FATAL("dds_read: %s\n", dds_strretcode(-rc));
+	}
+
+	if ((rc > 0) && (infos[0].valid_data))
+	{
+		msg = (interoperability_test_Cat *)samples[0];
+		printf("Received: %s { id: %d, name: \"%s\", age: %d, lives: %d }\n", interoperability_test_Cat_desc.m_typename, msg->parent.id, msg->parent.name, msg->parent.age, msg->lives);
 	}
 
 	rc = dds_waitset_wait(waitset, wsresults, wsresultsize, DDS_SECS(30));

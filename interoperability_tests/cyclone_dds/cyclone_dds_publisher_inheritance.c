@@ -1,16 +1,16 @@
 #include "ddsc/dds.h"
-#include "HelloWorld.h"
+#include "Inheritance.h"
 
-int main(int argc, char *argv[])
+int main(int argx, char *argv[])
 {
-	const char *topic_name = "HelloWorld";
+	const char *topic_name = "Inheritance";
 
 	const dds_entity_t participant = dds_create_participant(DDS_DOMAIN_DEFAULT, NULL /*qos*/, NULL /*listener*/);
 	if (participant < 0)
 	{
 		DDS_FATAL("dds_create_participant: %s\n", dds_strretcode(-participant));
 	}
-	const dds_entity_t topic = dds_create_topic(participant, &interoperability_test_HelloWorldType_desc, topic_name, NULL /*qos*/, NULL /*listener*/);
+	const dds_entity_t topic = dds_create_topic(participant, &interoperability_test_Cat_desc, topic_name, NULL /*qos*/, NULL /*listener*/);
 	if (topic < 0)
 	{
 		DDS_FATAL("dds_create_topic: %s\n", dds_strretcode(-topic));
@@ -44,7 +44,8 @@ int main(int argc, char *argv[])
 	dds_attach_t wsresults[1];
 	const size_t wsresultsize = 1U;
 	rc = dds_waitset_wait(waitset, wsresults, wsresultsize, DDS_SECS(60));
-	if (rc == 0) {
+	if (rc == 0)
+	{
 		DDS_FATAL("dds_waitset_wait: timeout");
 	}
 	if (rc != wsresultsize)
@@ -52,11 +53,32 @@ int main(int argc, char *argv[])
 		DDS_FATAL("dds_waitset_wait: %s\n", dds_strretcode(-rc));
 	}
 
-	interoperability_test_HelloWorldType msg = {8, 'a'};
-	dds_write(data_writer, &msg);
+	interoperability_test_Animal msg_animal = {.id = 1, .name = "Zoe", .age = 1};
+	interoperability_test_Cat msg = {.parent = msg_animal, .lives = 7};
+	rc = dds_write(data_writer, &msg);
+	if (rc != DDS_RETCODE_OK)
+	{
+		DDS_FATAL("dds_write: %s\n", dds_strretcode(-rc));
+	}
 
 	rc = dds_wait_for_acks(data_writer, DDS_SECS(30));
-	if (rc != DDS_RETCODE_OK) {
+	if (rc != DDS_RETCODE_OK)
+	{
 		DDS_FATAL("dds_wait_for_acks: %s\n", dds_strretcode(-rc));
 	}
+
+	rc = dds_dispose(data_writer, &msg);
+	if (rc != DDS_RETCODE_OK)
+	{
+		DDS_FATAL("dds_dispose: %s\n", dds_strretcode(-rc));
+	}
+
+	rc = dds_wait_for_acks(data_writer, DDS_SECS(30));
+	if (rc != DDS_RETCODE_OK)
+	{
+		DDS_FATAL("dds_wait_for_acks: %s\n", dds_strretcode(-rc));
+	}
+
+	// Sleep to allow sending acknowledgements
+	dds_sleepfor(DDS_SECS(5));
 }

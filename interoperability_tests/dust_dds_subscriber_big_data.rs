@@ -1,6 +1,6 @@
-include!("target/idl/nested_type.rs");
+include!("target/idl/big_data.rs");
 
-use self::interoperability::test::Nested;
+use self::interoperability::test::BigDataType;
 use dust_dds::{
     domain::domain_participant_factory::DomainParticipantFactory,
     infrastructure::{
@@ -12,6 +12,7 @@ use dust_dds::{
         sample_info::{ANY_INSTANCE_STATE, ANY_SAMPLE_STATE, ANY_VIEW_STATE, InstanceStateKind},
         status::{NO_STATUS, StatusKind},
         time::{Duration, DurationKind},
+        type_support::TypeSupport,
     },
     listener::NO_LISTENER,
     wait_set::{Condition, WaitSet},
@@ -26,7 +27,13 @@ fn main() {
         .unwrap();
 
     let topic = participant
-        .find_topic::<Nested>("Nested", Duration::new(120, 0))
+        .create_topic::<BigDataType>(
+            "BigData",
+            BigDataType::get_type_name(),
+            QosKind::Default,
+            NO_LISTENER,
+            NO_STATUS,
+        )
         .unwrap();
 
     let subscriber = participant
@@ -44,7 +51,7 @@ fn main() {
         ..Default::default()
     };
     let reader = subscriber
-        .create_datareader::<Nested>(
+        .create_datareader::<BigDataType>(
             &topic,
             QosKind::Specific(reader_qos),
             NO_LISTENER,

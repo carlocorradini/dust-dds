@@ -6,6 +6,8 @@ idlc_generate(TARGET HelloWorldGeneratedIdl FILES ../HelloWorld.idl)
 idlc_generate(TARGET BigDataGeneratedIdl FILES ../BigData.idl)
 idlc_generate(TARGET DisposeDataGeneratedIdl FILES ../DisposeData.idl)
 idlc_generate(TARGET NestedTypeGeneratedIdl FILES ../NestedType.idl)
+idlc_generate(TARGET InheritanceGeneratedIdl FILES ../Inheritance.idl)
+idlc_generate(TARGET InheritanceGeneratedIdl FILES ../Optional.idl)
 
 add_executable(CycloneDdsSubscriber
   cyclone_dds_subscriber.c
@@ -24,18 +26,18 @@ target_link_libraries(CycloneDdsPublisher PRIVATE
 )
 
 
-add_executable(CycloneDdsBigDataSubscriber
-  cyclone_dds_big_data_subscriber.c
+add_executable(CycloneDdsSubscriberBigData
+  cyclone_dds_subscriber_big_data.c
 )
-target_link_libraries(CycloneDdsBigDataSubscriber PRIVATE
+target_link_libraries(CycloneDdsSubscriberBigData PRIVATE
   CycloneDDS::ddsc
   BigDataGeneratedIdl
 )
 
-add_executable(CycloneDdsBigDataPublisher
-  cyclone_dds_big_data_publisher.c
+add_executable(CycloneDdsPublisherBigData
+  cyclone_dds_publisher_big_data.c
 )
-target_link_libraries(CycloneDdsBigDataPublisher PRIVATE
+target_link_libraries(CycloneDdsPublisherBigData PRIVATE
   CycloneDDS::ddsc
   BigDataGeneratedIdl
 )
@@ -57,6 +59,15 @@ target_link_libraries(CycloneDdsPublisherDispose PRIVATE
   DisposeDataGeneratedIdl
 )
 
+
+add_executable(CycloneDdsSubscriberNested
+  cyclone_dds_subscriber_nested.c
+)
+target_link_libraries(CycloneDdsSubscriberNested PRIVATE
+  CycloneDDS::ddsc
+  NestedTypeGeneratedIdl
+)
+
 add_executable(CycloneDdsPublisherNested
   cyclone_dds_publisher_nested.c
 )
@@ -65,10 +76,36 @@ target_link_libraries(CycloneDdsPublisherNested PRIVATE
   NestedTypeGeneratedIdl
 )
 
-add_executable(CycloneDdsSubscriberNested
-  cyclone_dds_subscriber_nested.c
+
+add_executable(CycloneDdsSubscriberInheritance
+  cyclone_dds_subscriber_inheritance.c
 )
-target_link_libraries(CycloneDdsSubscriberNested PRIVATE
+target_link_libraries(CycloneDdsSubscriberInheritance PRIVATE
   CycloneDDS::ddsc
-  NestedTypeGeneratedIdl
+  InheritanceGeneratedIdl
+)
+
+add_executable(CycloneDdsPublisherInheritance
+  cyclone_dds_publisher_inheritance.c
+)
+target_link_libraries(CycloneDdsPublisherInheritance PRIVATE
+  CycloneDDS::ddsc
+  InheritanceGeneratedIdl
+)
+
+
+add_executable(CycloneDdsSubscriberOptional
+  cyclone_dds_subscriber_optional.c
+)
+target_link_libraries(CycloneDdsSubscriberOptional PRIVATE
+  CycloneDDS::ddsc
+  OptionalGeneratedIdl
+)
+
+add_executable(CycloneDdsPublisherOptional
+  cyclone_dds_publisher_optional.c
+)
+target_link_libraries(CycloneDdsPublisherOptional PRIVATE
+  CycloneDDS::ddsc
+  OptionalGeneratedIdl
 )
