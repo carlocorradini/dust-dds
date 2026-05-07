@@ -284,7 +284,7 @@ pub fn expand_type_support(input: &DeriveInput) -> Result<TokenStream> {
                                         index: #index,
                                         try_construct_kind: ::dust_dds::xtypes::dynamic_type::TryConstructKind::UseDefault,
                                         label: ::core::option::Option::None,
-                                        is_key: false,
+                                        key: ::core::option::Option::None,
                                         is_optional: false,
                                         is_must_understand: true,
                                         is_shared: false,
