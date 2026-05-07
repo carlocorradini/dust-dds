@@ -7,6 +7,7 @@ idlc_generate(TARGET BigDataGeneratedIdl FILES ../BigData.idl)
 idlc_generate(TARGET DisposeDataGeneratedIdl FILES ../DisposeData.idl)
 idlc_generate(TARGET NestedTypeGeneratedIdl FILES ../NestedType.idl)
 idlc_generate(TARGET InheritanceGeneratedIdl FILES ../Inheritance.idl)
+idlc_generate(TARGET UnionGeneratedIdl FILES ../Union.idl)
 
 add_executable(CycloneDdsSubscriber
   cyclone_dds_subscriber.c
@@ -88,4 +89,21 @@ add_executable(CycloneDdsPublisherInheritance
 target_link_libraries(CycloneDdsPublisherInheritance PRIVATE
   CycloneDDS::ddsc
   InheritanceGeneratedIdl
+)
+
+
+add_executable(CycloneDdsPublisherUnion
+  cyclone_dds_publisher_union.c
+)
+target_link_libraries(CycloneDdsPublisherUnion PRIVATE
+  CycloneDDS::ddsc
+  UnionGeneratedIdl
+)
+
+add_executable(CycloneDdsSubscriberUnion
+  cyclone_dds_subscriber_union.c
+)
+target_link_libraries(CycloneDdsSubscriberUnion PRIVATE
+  CycloneDDS::ddsc
+  UnionGeneratedIdl
 )
