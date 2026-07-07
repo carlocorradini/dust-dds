@@ -5,11 +5,12 @@ use dust_dds::{
     domain::domain_participant_factory::DomainParticipantFactory,
     infrastructure::{
         listener::NO_LISTENER,
-        qos::{DataWriterQos, QosKind},
+        qos::{DataReaderQos, QosKind},
         qos_policy::{
             DurabilityQosPolicy, DurabilityQosPolicyKind, ReliabilityQosPolicy,
             ReliabilityQosPolicyKind,
         },
+        sample_info::{ANY_INSTANCE_STATE, ANY_SAMPLE_STATE, ANY_VIEW_STATE},
         status::{NO_STATUS, StatusKind},
         time::{Duration, DurationKind},
     },
@@ -26,20 +27,14 @@ fn main() {
         .unwrap();
 
     let topic = participant
-        .create_topic::<Dummy>(
-            "Dummy",
-            Dummy::get_type().get_name(),
-            QosKind::Default,
-            NO_LISTENER,
-            NO_STATUS,
-        )
+        .find_topic::<Dummy>("Dummy", Duration::new(120, 0))
         .unwrap();
 
-    let publisher = participant
-        .create_publisher(QosKind::Default, NO_LISTENER, NO_STATUS)
+    let subscriber = participant
+        .create_subscriber(QosKind::Default, NO_LISTENER, NO_STATUS)
         .unwrap();
 
-    let writer_qos = DataWriterQos {
+    let reader_qos = DataReaderQos {
         reliability: ReliabilityQosPolicy {
             kind: ReliabilityQosPolicyKind::Reliable,
             max_blocking_time: DurationKind::Finite(Duration::new(1, 0)),
@@ -49,35 +44,41 @@ fn main() {
         },
         ..Default::default()
     };
-    let writer = publisher
-        .create_datawriter(
+    let reader = subscriber
+        .create_datareader::<Dummy>(
             &topic,
-            QosKind::Specific(writer_qos),
+            QosKind::Specific(reader_qos),
             NO_LISTENER,
             NO_STATUS,
         )
         .unwrap();
-    let writer_cond = writer.get_statuscondition();
-    writer_cond
-        .set_enabled_statuses(&[StatusKind::PublicationMatched])
+
+    let reader_cond = reader.get_statuscondition();
+    reader_cond
+        .set_enabled_statuses(&[StatusKind::SubscriptionMatched])
         .unwrap();
     let mut wait_set = WaitSet::new();
     wait_set
-        .attach_condition(Condition::StatusCondition(writer_cond))
+        .attach_condition(Condition::StatusCondition(reader_cond.clone()))
         .unwrap();
-
     wait_set.wait(Duration::new(60, 0)).unwrap();
 
-    let mut value = 0;
     loop {
-        let data = Dummy {
-            id: "Dummy".to_string(),
-            value,
-        };
-        println!("write \"{}\": {data:?}", Dummy::get_type().get_name());
-        writer.write(data, None).unwrap();
+        reader_cond
+            .set_enabled_statuses(&[StatusKind::DataAvailable])
+            .unwrap();
+        wait_set.wait(Duration::new(30, 0)).unwrap();
 
-        value += 1;
-        std::thread::sleep(std::time::Duration::from_secs(1));
+        let samples = reader
+            .read(16, ANY_SAMPLE_STATE, ANY_VIEW_STATE, ANY_INSTANCE_STATE)
+            .unwrap();
+
+        for sample in samples {
+            println!(
+                "take \"{}\": {:?}",
+                Dummy::get_type().get_name(),
+                sample.data.unwrap()
+            );
+        }
     }
 }

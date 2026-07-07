@@ -78,5 +78,9 @@ name = "dust_dds_publisher_union"
 path = "dust_dds_publisher_union.rs"
 
 [[bin]]
+name = "dust_dds_subscriber_dummy"
+path = "dust_dds_subscriber_dummy.rs"
+
+[[bin]]
 name = "dust_dds_publisher_dummy"
 path = "dust_dds_publisher_dummy.rs"

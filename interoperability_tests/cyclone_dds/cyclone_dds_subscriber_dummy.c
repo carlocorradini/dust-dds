@@ -75,7 +75,7 @@ int main(int argc, char *argv[]) {
 
     for (dds_return_t i = 0; i < rc; ++i) {
       const interoperability_test_Dummy *sample = samples[i];
-      printf("take %s { id: %s, value: %d }\n",
+      printf("take \"%s\": { id: \"%s\", value: %d }\n",
              interoperability_test_Dummy_desc.m_typename, sample->id,
              sample->value);
     }

@@ -115,3 +115,11 @@ target_link_libraries(CycloneDdsSubscriberDummy PRIVATE
   CycloneDDS::ddsc
   DummyGeneratedIdl
 )
+
+add_executable(CycloneDdsPublisherDummy
+  cyclone_dds_publisher_dummy.c
+)
+target_link_libraries(CycloneDdsPublisherDummy PRIVATE
+  CycloneDDS::ddsc
+  DummyGeneratedIdl
+)
