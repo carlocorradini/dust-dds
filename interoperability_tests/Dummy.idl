@@ -1,0 +1,11 @@
+module interoperability {
+	module test {
+
+		struct Dummy {
+			@key
+			string id;
+			uint8 value;
+		};
+
+	};
+};
