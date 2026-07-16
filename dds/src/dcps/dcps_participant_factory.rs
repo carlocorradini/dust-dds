@@ -163,16 +163,19 @@ impl<R: DdsRuntime> DcpsParticipantFactory<R> {
             .min()
     }
 
-    pub(crate) fn poke(&mut self) {
-        for dp in &mut self.domain_participant_list {
-            dp.poke(&self.runtime.clock());
-        }
+    pub(crate) fn time_until_missed_reader_deadline(&self) -> Option<Duration> {
+        let now = self.runtime.clock().now();
+        self.domain_participant_list
+            .iter()
+            .filter_map(|x| x.time_until_missed_reader_deadline(now))
+            .min()
     }
 
-    pub(crate) fn remove_stale_participants(&mut self) {
+    pub(crate) fn time_until_missed_writer_deadline(&self) -> Option<Duration> {
         let now = self.runtime.clock().now();
-        for dp in &mut self.domain_participant_list {
-            dp.remove_stale_participants(now);
-        }
+        self.domain_participant_list
+            .iter()
+            .filter_map(|x| x.time_until_missed_writer_deadline(now))
+            .min()
     }
 }

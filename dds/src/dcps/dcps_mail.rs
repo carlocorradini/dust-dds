@@ -48,7 +48,6 @@ pub enum DcpsMail {
     Reader(ReaderServiceMail),
     StatusCondition(StatusConditionMail),
     Message(MessageServiceMail),
-    Event(EventServiceMail),
     Discovery(DiscoveryServiceMail),
 }
 
@@ -145,12 +144,13 @@ pub enum ParticipantServiceMail {
         participant_handle: InstanceHandle,
         topic_name: String,
         type_support: DynamicType<'static>,
-        reply_sender: OneshotSender<DdsResult<Option<(InstanceHandle, String)>>>,
+        timeout: Duration,
+        reply_sender: OneshotSender<DdsResult<(InstanceHandle, String)>>,
     },
     LookupTopicdescription {
         participant_handle: InstanceHandle,
         topic_name: String,
-        reply_sender: OneshotSender<DdsResult<Option<(String, InstanceHandle)>>>,
+        reply_sender: OneshotSender<DdsResult<Option<String>>>,
     },
     IgnoreParticipant {
         participant_handle: InstanceHandle,
@@ -604,21 +604,6 @@ pub enum MessageServiceMail {
     HandleData {
         participant_handle: InstanceHandle,
         data_message: Vec<u8>,
-    },
-}
-
-pub enum EventServiceMail {
-    OfferedDeadlineMissed {
-        participant_handle: InstanceHandle,
-        publisher_handle: InstanceHandle,
-        data_writer_handle: InstanceHandle,
-        change_instance_handle: InstanceHandle,
-    },
-    RequestedDeadlineMissed {
-        participant_handle: InstanceHandle,
-        subscriber_handle: InstanceHandle,
-        data_reader_handle: InstanceHandle,
-        change_instance_handle: InstanceHandle,
     },
 }
 
