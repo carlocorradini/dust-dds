@@ -1,0 +1,23 @@
+module interoperability {
+    module test {
+        @final
+        struct Element {
+            sequence<uint32> values;
+            @optional
+            uint32 maybe;
+        };
+
+        @final
+        union MyUnion switch (uint8) {
+            case 0:
+                Element element;
+        };
+
+        @final
+        struct MyStruct {
+            @key
+            uint32 id;
+            sequence<MyUnion> unions;
+        };
+    };
+};

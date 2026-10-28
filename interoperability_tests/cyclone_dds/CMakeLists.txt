@@ -11,6 +11,7 @@ idlc_generate(TARGET NestedTypeGeneratedIdl FILES ../NestedType.idl)
 idlc_generate(TARGET UnionGeneratedIdl FILES ../Union.idl)
 idlc_generate(TARGET InheritanceGeneratedIdl FILES ../Inheritance.idl)
 idlc_generate(TARGET OptionalGeneratedIdl FILES ../Optional.idl)
+idlc_generate(TARGET DummyGeneratedIdl FILES ../Dummy.idl)
 
 add_executable(CycloneDdsSubscriber
   cyclone_dds_subscriber.c
@@ -124,4 +125,20 @@ add_executable(CycloneDdsPublisherOptional
 target_link_libraries(CycloneDdsPublisherOptional PRIVATE
   CycloneDDS::ddsc
   OptionalGeneratedIdl
+)
+
+add_executable(CycloneDdsSubscriberDummy
+  cyclone_dds_subscriber_dummy.c
+)
+target_link_libraries(CycloneDdsSubscriberDummy PRIVATE
+  CycloneDDS::ddsc
+  DummyGeneratedIdl
+)
+
+add_executable(CycloneDdsPublisherDummy
+  cyclone_dds_publisher_dummy.c
+)
+target_link_libraries(CycloneDdsPublisherDummy PRIVATE
+  CycloneDDS::ddsc
+  DummyGeneratedIdl
 )
