@@ -1,0 +1,37 @@
+module interoperability {
+    module test {
+        @final
+        struct CircleShape {
+            double latitude;
+            double longitude;
+            double radius;
+        };
+
+        @final
+        union ShapeUnion switch (int32) {
+            case 0:
+                CircleShape circle;
+        };
+
+        @final
+        struct Element {
+            @optional
+            string name;
+            ShapeUnion shape;
+        };
+
+        @final
+        struct MyStructInner {
+            sequence<Element> a;
+            sequence<Element> b;
+            sequence<Element> c;
+        };
+
+        @final
+        struct MyStruct {
+            @key
+            uint32 id;
+            MyStructInner inner;
+        };
+    };
+};
