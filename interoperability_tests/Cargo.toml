@@ -78,6 +78,14 @@ name = "dust_dds_publisher_union"
 path = "dust_dds_publisher_union.rs"
 
 [[bin]]
+name = "dust_dds_subscriber_union_discriminator"
+path = "dust_dds_subscriber_union_discriminator.rs"
+
+[[bin]]
+name = "dust_dds_publisher_union_discriminator"
+path = "dust_dds_publisher_union_discriminator.rs"
+
+[[bin]]
 name = "dust_dds_subscriber_optional"
 path = "dust_dds_subscriber_optional.rs"
 

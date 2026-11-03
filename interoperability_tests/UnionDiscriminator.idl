@@ -1,0 +1,34 @@
+module interoperability {
+    module test {
+        @final
+        struct Vec3F32 {
+            float x;
+            float y;
+            float z;
+        };
+
+        @bit_bound(8)
+        enum MessagePayloadDiscriminator {
+            @value(0)
+            MESSAGE_PAYLOAD_DISCRIMINATOR_POSITION,
+            MESSAGE_PAYLOAD_DISCRIMINATOR_VELOCITY,
+            MESSAGE_PAYLOAD_DISCRIMINATOR_HEARTBEAT,
+            MESSAGE_PAYLOAD_DISCRIMINATOR_ACKNOWLEDGEMENT
+        };
+
+        @final
+        union MessagePayload switch (MessagePayloadDiscriminator) {
+            case MESSAGE_PAYLOAD_DISCRIMINATOR_POSITION:
+                Vec3F32 position;
+            case MESSAGE_PAYLOAD_DISCRIMINATOR_VELOCITY:
+                Vec3F32 velocity;
+        };
+
+        @final
+        struct Message {
+            @key
+            uint8 id;
+            MessagePayload payload;
+        };
+    };
+};
